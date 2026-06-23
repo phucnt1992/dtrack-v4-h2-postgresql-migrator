@@ -11,3 +11,6 @@ wheels/
 
 # Dependency Track
 .volumes
+
+# Coverage reports
+.coverage

@@ -1,34 +1,43 @@
-# Dependency Track v5 Migration
+# DTrack Migration CLI
 
-## Context
+This repository now includes a Python-based CLI for migrating schema and data from H2 into PostgreSQL.
 
-Migration
+## Quick start
 
-## Database migration
-
-### Backup h2 database before migration
-
- ```psql
-pg_dump -F c -U <username> -h <host> -d <database_name> -f backup_20260615.dump
- ```
-
- ✏️ Note
- - The custom format (`-F -c`) compresses the file size and allows for flexible, multi-threaded restoration via the `pg_restore` utility
- - We do **not** start `apiserver` yet. The v5 `apiserver` seeds tables on first boot that the migrator must populate from v4, so starting it before the migration would corrupt the destination.
-### Aliasing the migrator
-
-DTrack shipped migrator as container image. So that, we just need to run migrator via `docker`:
-
-Bootstrapping the v5 schema
+Install dependencies with `uv sync` and run the CLI via:
 
 ```bash
-docker run --rm -it ghcr.io/dependencytrack/v4-migrator:5.0.1 \
-  --target-url 'jdbc:postgresql://<host>:<port>/<database_name>' \
-  --target-user '<user>' \
-  --target-pass '<password>'
-
-## Expected output:
-# Applying v5 Flyway schema up to 202605111028
-# ...
-# Bootstrap complete. Flyway head = 202605111028. Run 'extract' or 'run' next.
+uv run python -m dtrack --help
 ```
+
+## Available commands
+
+- `inspect` – connect to H2 and print a schema summary
+- `schema` – create or validate PostgreSQL schema from discovered H2 metadata
+- `data` – copy data rows into PostgreSQL
+- `migrate` – run the full inspect → schema → data workflow
+
+Example:
+
+```bash
+uv run dtrack inspect --h2-jdbc-url jdbc:h2:./mydb --postgres-url postgresql+psycopg://dtrack:dtrack@localhost:5432/dtrack
+```
+
+Both commands accept only connection strings for their database targets.
+
+## Notes
+
+- H2 access uses a JDBC bridge via `jaydebeapi` and requires the H2 JDBC driver JAR plus `jpype1`.
+- PostgreSQL connections use SQLAlchemy and `psycopg`.
+- The implementation currently focuses on core schema planning, type conversion, and batch data loading with optional JSON reporting.
+
+## Testing
+
+Integration tests use the fixture database under `tests/integration/fixtures/` and run against a real PostgreSQL testcontainer. They download a pinned H2 JDBC JAR automatically into `.pytest_cache/h2-drivers/` on first use, then copy the fixture files into a temporary directory so the repo fixtures stay read-only.
+
+Run the integration suite directly with:
+
+```bash
+uv run pytest tests/integration -v
+```
+
