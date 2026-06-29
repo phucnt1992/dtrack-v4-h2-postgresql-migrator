@@ -4,12 +4,7 @@ import json
 from pathlib import Path
 from typing import Any
 
-from dtrack.models import MigrationReport, SchemaSnapshot
-
-
-def describe_snapshot(snapshot: SchemaSnapshot) -> str:
-    table_names = ", ".join(table.name for table in snapshot.tables) or "<none>"
-    return f"Found {len(snapshot.tables)} tables: {table_names}"
+from dtrack.models import MigrationReport
 
 
 def serialize_report(report: MigrationReport) -> dict[str, Any]:

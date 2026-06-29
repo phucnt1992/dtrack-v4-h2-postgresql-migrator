@@ -1,0 +1,23 @@
+services:
+  dtrack-apiserver:
+    image: dependencytrack/apiserver:4.14.2-alpine
+    environment:
+      - ALPINE_DATABASE_MODE=external
+      - ALPINE_DATABASE_DRIVER=org.postgresql.Driver
+      - ALPINE_DATABASE_URL=jdbc:postgresql://db:5432/dtrack
+      - ALPINE_DATABASE_USERNAME=dtrack
+      - ALPINE_DATABASE_PASSWORD=dtrack
+    # volumes:
+    #   - ./.volumes:/data:rw
+    ports:
+      - 8080:8080
+    depends_on:
+      - db
+
+  dtrack-frontend:
+    image: dependencytrack/frontend:4.14.2
+    environment:
+      - API_BASE_URL=http://localhost:8080
+    ports:
+      - 8000:8080
+    restart: unless-stopped

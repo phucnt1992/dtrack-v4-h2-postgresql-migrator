@@ -1,50 +1,6 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Any
-
-
-@dataclass(slots=True)
-class ColumnSpec:
-    name: str
-    type_name: str
-    nullable: bool = True
-    primary_key: bool = False
-    length: int | None = None
-    precision: int | None = None
-    scale: int | None = None
-    default: Any = None
-    identity: bool = False
-
-
-@dataclass(slots=True)
-class ForeignKeySpec:
-    name: str
-    column_name: str
-    referenced_table: str
-    referenced_column: str
-
-
-@dataclass(slots=True)
-class IndexSpec:
-    name: str
-    columns: list[str] = field(default_factory=list)
-    unique: bool = False
-
-
-@dataclass(slots=True)
-class TableSpec:
-    name: str
-    columns: list[ColumnSpec] = field(default_factory=list)
-    primary_keys: list[str] = field(default_factory=list)
-    foreign_keys: list[ForeignKeySpec] = field(default_factory=list)
-    indexes: list[IndexSpec] = field(default_factory=list)
-
-
-@dataclass(slots=True)
-class SchemaSnapshot:
-    tables: list[TableSpec] = field(default_factory=list)
-    source_name: str = "h2"
 
 
 @dataclass(slots=True)

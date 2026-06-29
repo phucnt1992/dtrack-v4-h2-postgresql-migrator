@@ -44,5 +44,7 @@ def build_default_registry() -> TypeConversionRegistry:
     registry.register("BLOB", lambda value: value if isinstance(value, bytes) else bytes(str(value), "utf-8"))
     registry.register("DATE", lambda value: value if isinstance(value, date) else date.fromisoformat(str(value)))
     registry.register("TIME", lambda value: value if isinstance(value, time) else time.fromisoformat(str(value)))
-    registry.register("TIMESTAMP", lambda value: value if isinstance(value, datetime) else datetime.fromisoformat(str(value)))
+    registry.register(
+        "TIMESTAMP", lambda value: value if isinstance(value, datetime) else datetime.fromisoformat(str(value))
+    )
     return registry

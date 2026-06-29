@@ -10,9 +10,8 @@ from sqlalchemy import inspect, text
 from sqlalchemy.engine import Engine
 
 from dtrack.config import H2ConnectionSettings
-from dtrack.conversion import TypeConversionRegistry, build_default_registry
 from dtrack.h2.jdbc import H2SourceReader
-from dtrack.models import MigrationOptions, SchemaSnapshot, TableSpec
+from dtrack.models import MigrationOptions
 
 H2_DRIVER_PATH = Path(__file__).resolve().parents[1] / "vendors" / "h2.jar"
 
@@ -58,14 +57,6 @@ def build_migration_options(
     )
 
 
-def inspect_h2_snapshot(h2_jdbc_url: str, h2_driver_path: Path | str) -> SchemaSnapshot:
-    settings = H2ConnectionSettings(
-        jdbc_url=h2_jdbc_url,
-        driver_path=str(h2_driver_path),
-    )
-    return H2SourceReader(settings).inspect_schema()
-
-
 def read_h2_rows(h2_jdbc_url: str, h2_driver_path: Path | str, table_name: str) -> list[dict[str, Any]]:
     settings = H2ConnectionSettings(
         jdbc_url=h2_jdbc_url,
@@ -73,15 +64,6 @@ def read_h2_rows(h2_jdbc_url: str, h2_driver_path: Path | str, table_name: str) 
     )
     reader = H2SourceReader(settings)
     return list(reader.read_rows(table_name))
-
-
-def normalize_row(row: dict[str, Any], table_spec: TableSpec, registry: TypeConversionRegistry | None = None) -> dict[str, Any]:
-    registry = registry or build_default_registry()
-    normalized: dict[str, Any] = {}
-    for column in table_spec.columns:
-        if column.name in row:
-            normalized[column.name] = registry.convert(row[column.name], column.type_name)
-    return normalized
 
 
 def fetch_postgres_rows(
@@ -118,7 +100,7 @@ def get_postgres_table_names(engine: Engine, schema_name: str) -> list[str]:
     return inspector.get_table_names(schema=schema_name)
 
 
-def get_postgres_columns(engine: Engine, table_name: str, schema_name: str) -> list[dict[str, Any]]:
+def get_postgres_columns(engine: Engine, table_name: str, schema_name: str) -> list[Any]:
     inspector = inspect(engine)
     return inspector.get_columns(table_name, schema=schema_name)
 

@@ -1,0 +1,21 @@
+services:
+  dtrack-apiserver:
+    image: dependencytrack/apiserver:5.0.2
+    environment:
+      - DT_DATASOURCE_URL=jdbc:postgresql://db:5432/dtrack_v5
+      - DT_DATASOURCE_USERNAME=dtrack
+      - DT_DATASOURCE_PASSWORD=dtrack
+    ports:
+      - 8080:8080
+    depends_on:
+      - db
+
+  dtrack-frontend:
+    image: dependencytrack/frontend:5.0.2
+    environment:
+      - API_BASE_URL=http://localhost:8080
+    ports:
+      - 8000:8080
+    restart: unless-stopped
+    depends_on:
+      - dtrack-apiserver

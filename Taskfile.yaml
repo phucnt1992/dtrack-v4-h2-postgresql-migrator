@@ -8,7 +8,7 @@ vars:
 tasks:
   default:
     desc: Run the default task
-    cmd: task init
+    cmd: task --list
 
   init:
     desc: Initialize the project
@@ -16,6 +16,11 @@ tasks:
       - uv python install {{.PYTHON_VERSION}} --compile-bytecode
       - uv venv --python {{.PYTHON_VERSION}} --clear
       - uv sync --compile-bytecode
+
+  clear-cache:
+    desc: Clear the project
+    cmds:
+      - uv cache prune
 
   lint:
     desc: "Run linters to check code quality."
@@ -28,7 +33,7 @@ tasks:
       - uv run ruff format {{.CLI_ARGS}}
 
   type:
-    desc: "Run type checking using mypy."
+    desc: "Run type checking using ty."
     cmds:
       - uv run ty check {{.CLI_ARGS}}
 
@@ -42,7 +47,23 @@ tasks:
     cmds:
       - uv run pytest --cov=src {{.CLI_ARGS}}
 
-  db:migrate:
+  db:
     desc: "Run the migration CLI"
     cmds:
-      - uv run dtrack migrate {{.CLI_ARGS}}
+      - uv run python -m dtrack {{.CLI_ARGS}}
+
+  build:
+    desc: "Build the docker image"
+    cmds:
+      - docker build -t local/dtrack-cli:latest .
+
+  publish:
+    desc: "Publish the docker image to tar file"
+    deps:
+      - build
+    cmds:
+      - mkdir -p dist
+      - docker save -o dist/dtrack.tar local/dtrack-cli:latest
+
+  dump:
+    desc: "D"

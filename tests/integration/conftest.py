@@ -7,11 +7,7 @@ from pathlib import Path
 import pytest
 from testcontainers.postgres import PostgresContainer
 
-from tests.integration.helpers import (
-    build_fixture_jdbc_url,
-    copy_fixture_database,
-    ensure_h2_driver_path
-)
+from tests.integration.helpers import build_fixture_jdbc_url, copy_fixture_database, ensure_h2_driver_path
 
 
 @pytest.fixture(scope="session")
@@ -19,6 +15,7 @@ def postgres_container() -> Generator[PostgresContainer, None, None]:
     with PostgresContainer("postgres:16-alpine") as container:
         container.start()
         yield container
+        container.stop()
 
 
 @pytest.fixture()

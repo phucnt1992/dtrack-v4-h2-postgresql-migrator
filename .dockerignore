@@ -1,0 +1,26 @@
+# Ignore files and directories for Docker builds
+.agents/
+.github/
+.pytest_cache/
+.ruff_cache/
+.venv/
+.volumes/
+.vscode/
+.docs/
+spec/
+tests/
+
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Local files
+skills-lock.json
+AGENTS.md
+compose*.yaml
+.env
+.coverage
