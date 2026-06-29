@@ -43,6 +43,15 @@ uv run pytest tests/integration -v
 
 ## Step to migrate from DTrack 4.x to 5.x
 
+### Copy H2 DB from DTrack 4.x
+
+To copy the H2 database from DTrack 4.x, you can use the following command:
+
+```bash
+docker cp <container_id>:/data/.dependency-track/db.mv.db <workspace>/db.mv.db
+```
+
+
 ### Prepare PostgreSQL DB for DTrack 4.x
 
 Start empty PostgreSQL DB via:
