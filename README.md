@@ -30,6 +30,7 @@ Both commands accept only connection strings for their database targets.
 - H2 access uses a JDBC bridge via `jaydebeapi` and requires the H2 JDBC driver JAR plus `jpype1`.
 - PostgreSQL connections use SQLAlchemy and `psycopg`.
 - The implementation currently focuses on core schema planning, type conversion, and batch data loading with optional JSON reporting.
+- During data load, JDBC LOB values are normalized to native Python values (`CLOB` -> text, `BLOB` -> bytes) before writing to PostgreSQL.
 
 ## Testing
 

@@ -13,9 +13,7 @@ from tests.integration.helpers import build_fixture_jdbc_url, copy_fixture_datab
 @pytest.fixture(scope="session")
 def postgres_container() -> Generator[PostgresContainer, None, None]:
     with PostgresContainer("postgres:16-alpine") as container:
-        container.start()
         yield container
-        container.stop()
 
 
 @pytest.fixture()

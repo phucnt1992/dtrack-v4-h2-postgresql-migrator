@@ -65,5 +65,7 @@ tasks:
       - mkdir -p dist
       - docker save -o dist/dtrack.tar local/dtrack-cli:latest
 
-  dump:
-    desc: "D"
+  clean:
+    desc: "Clean the project"
+    cmds:
+      - rm -rf .venv .volumes dist .coverage .pytest_cache .ruff_cache

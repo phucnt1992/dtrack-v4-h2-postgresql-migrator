@@ -1,12 +1,17 @@
+volumes:
+  dtrack_data:
+
 services:
   dtrack-apiserver:
     image: dependencytrack/apiserver:5.0.2
     environment:
-      - DT_DATASOURCE_URL=jdbc:postgresql://db:5432/dtrack_v5
+      - DT_DATASOURCE_URL=jdbc:postgresql://db:5432/dtrack
       - DT_DATASOURCE_USERNAME=dtrack
       - DT_DATASOURCE_PASSWORD=dtrack
     ports:
       - 8080:8080
+    volumes:
+      - dtrack_data:/data:rw
     depends_on:
       - db
 

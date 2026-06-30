@@ -34,17 +34,35 @@ def build_default_registry() -> TypeConversionRegistry:
     registry.register("DOUBLE", lambda value: float(value))
     registry.register("FLOAT", lambda value: float(value))
     registry.register("REAL", lambda value: float(value))
-    registry.register("VARCHAR", lambda value: str(value))
-    registry.register("CHAR", lambda value: str(value))
-    registry.register("CHARACTER", lambda value: str(value))
-    registry.register("CLOB", lambda value: str(value))
-    registry.register("TEXT", lambda value: str(value))
-    registry.register("BINARY", lambda value: value if isinstance(value, bytes) else bytes(str(value), "utf-8"))
-    registry.register("VARBINARY", lambda value: value if isinstance(value, bytes) else bytes(str(value), "utf-8"))
-    registry.register("BLOB", lambda value: value if isinstance(value, bytes) else bytes(str(value), "utf-8"))
+    registry.register("VARCHAR", _to_text)
+    registry.register("CHAR", _to_text)
+    registry.register("CHARACTER", _to_text)
+    registry.register("CLOB", _to_text)
+    registry.register("TEXT", _to_text)
+    registry.register("BINARY", _to_binary)
+    registry.register("VARBINARY", _to_binary)
+    registry.register("BLOB", _to_binary)
     registry.register("DATE", lambda value: value if isinstance(value, date) else date.fromisoformat(str(value)))
     registry.register("TIME", lambda value: value if isinstance(value, time) else time.fromisoformat(str(value)))
     registry.register(
         "TIMESTAMP", lambda value: value if isinstance(value, datetime) else datetime.fromisoformat(str(value))
     )
     return registry
+
+
+def _to_text(value: Any) -> str:
+    if isinstance(value, str):
+        return value
+    if isinstance(value, (bytes, bytearray, memoryview)):
+        return bytes(value).decode("utf-8")
+    return str(value)
+
+
+def _to_binary(value: Any) -> bytes:
+    if isinstance(value, bytes):
+        return value
+    if isinstance(value, (bytearray, memoryview)):
+        return bytes(value)
+    if isinstance(value, str):
+        return value.encode("utf-8")
+    raise TypeError(f"Unsupported binary value type: {type(value).__name__}")
