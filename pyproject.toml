@@ -3,9 +3,9 @@ requires = ["setuptools>=68"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "dtrack"
-version = "0.1.0"
-description = "Add your description here"
+name = "dtrack-v4-h2-postgresql-migrator"
+version = "1.0.0"
+description = "A tool to migrate Dependency-Track v4 H2 database to PostgreSQL."
 readme = "README.md"
 requires-python = ">=3.14"
 dependencies = [
@@ -21,7 +21,7 @@ dependencies = [
 dtrack = "dtrack.cli:main"
 
 [tool.setuptools]
-package-dir = {"" = "src"}
+package-dir = { "" = "src" }
 
 [tool.setuptools.packages.find]
 where = ["src"]
