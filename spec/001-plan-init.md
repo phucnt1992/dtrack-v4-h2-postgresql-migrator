@@ -55,7 +55,7 @@ Build a Python CLI that migrates schema and data from an H2 embedded database in
 ### Architecture
 
 Split the CLI into five focused layers:
-
+[text](.)
 1. **CLI layer** in `src/dtrack/cli.py` exposes `inspect`, `schema`, `data`, and `migrate`.
 2. **Source inspection layer** in `src/dtrack/h2/` uses JDBC to read tables, columns, constraints, indexes, and rows from H2.
 3. **Migration planning layer** in `src/dtrack/migration/` converts extracted H2 metadata into an internal schema model plus an ordered execution plan.
@@ -244,4 +244,3 @@ Implement conversions through a registry keyed by source type so custom override
 6. Wire CLI commands and reporting.
 7. Add unit/integration tests.
 8. Update README and task aliases.
-
